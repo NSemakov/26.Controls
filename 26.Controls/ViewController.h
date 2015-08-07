@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UISwitch *switchRotation;
-@property (weak, nonatomic) IBOutlet UISwitch *switchScale;
-@property (weak, nonatomic) IBOutlet UISwitch *switchTranslation;
+
 @property (weak, nonatomic) IBOutlet UISlider *sliderValue;
 @property (weak, nonatomic) IBOutlet UIImageView *testView;
 @property (assign,nonatomic) CGFloat currentAngle;
+@property (assign,nonatomic) CGFloat durationOfAnimation;
+
 - (IBAction)actionSwitchRotation:(UISwitch *)sender;
 - (IBAction)actionSwitchScale:(UISwitch *)sender;
 - (IBAction)actionSwitchTranslation:(UISwitch *)sender;

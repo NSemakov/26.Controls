@@ -16,13 +16,6 @@
                                 <rect key="frame" x="114" y="41" width="93" height="101"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="tGU-YL-tbw">
-                                <rect key="frame" x="136" y="277" width="51" height="31"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <connections>
-                                    <action selector="actionSwitchScale:" destination="BYZ-38-t0r" eventType="valueChanged" id="mhH-N0-quf"/>
-                                </connections>
-                            </switch>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="DPT-aO-hRY">
                                 <rect key="frame" x="235" y="277" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask"/>
@@ -65,14 +58,25 @@
                                     <action selector="actionSwitchRotation:" destination="BYZ-38-t0r" eventType="valueChanged" id="NeB-vX-WfK"/>
                                 </connections>
                             </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Speed" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Lfi-Hh-dk1">
+                                <rect key="frame" x="102" y="350" width="116" height="21"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="tGU-YL-tbw">
+                                <rect key="frame" x="136" y="277" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <connections>
+                                    <action selector="actionSwitchScale:" destination="BYZ-38-t0r" eventType="valueChanged" id="mhH-N0-quf"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="sliderValue" destination="1Te-0o-QJP" id="BkK-KQ-k1R"/>
-                        <outlet property="switchRotation" destination="pPA-V3-WE5" id="T8f-aQ-vPr"/>
-                        <outlet property="switchScale" destination="tGU-YL-tbw" id="ucH-Py-Wrj"/>
-                        <outlet property="switchTranslation" destination="DPT-aO-hRY" id="aQL-Ql-Rok"/>
                         <outlet property="testView" destination="lYR-ug-cn7" id="vCU-4D-OwP"/>
                     </connections>
                 </viewController>

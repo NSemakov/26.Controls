@@ -19,10 +19,8 @@
     // Do any additional setup after loading the view, typically from a nib.
     self.testView.backgroundColor=[UIColor redColor];
     self.currentAngle=0;
-    
-        
-        //CGAffineTransform rot = CGAffineTransformMakeRotation(360*M_PI/180);
-        //self.testView.transform = rot;
+    self.durationOfAnimation=2.f;
+
 
 }
 - (void) viewDidAppear:(BOOL)animated {
@@ -34,74 +32,99 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 - (void) rotationMethod:(CGFloat) fromValueAngle{
+    
     CABasicAnimation *anim;
     anim = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
     anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    anim.duration = 10;
+    anim.duration = self.durationOfAnimation;
     anim.repeatCount = INFINITY;
-    //anim.cumulative=YES;
-    //anim.fillMode = kCAFillModeForwards;
+
     anim.fromValue=[NSNumber numberWithFloat:fromValueAngle];
     anim.byValue = [NSNumber numberWithFloat:3.14f+fromValueAngle];
-    anim.delegate=self;
-    //get current layer angle during animation in flight
-    //CALayer *currentLayer = (CALayer *)[self.testView.layer presentationLayer];
-    float currentAngle = [(NSNumber *)[self.testView.layer.presentationLayer valueForKeyPath:@"transform.rotation.z"] floatValue];
-    currentAngle = (currentAngle+fromValueAngle)*180/3.14;//roundf();
     
-    //NSLog(@"current angle: %f",currentAngle);
-    
-    //anim.toValue = [NSNumber numberWithFloat:(360*M_PI/180 + beginValue)];
-    [self.testView.layer addAnimation:anim forKey:@"rotate"];
+    [self.testView.layer addAnimation:anim forKey:@"rotateByZ"];
 }
+
+- (void) scalingMethod {
+    CAKeyframeAnimation *scaleAnimation=[[CAKeyframeAnimation alloc]init];
+    scaleAnimation.keyPath=@"transform.scale";
+    scaleAnimation.keyTimes=@[@0,@0.5,@1];//same as default
+    scaleAnimation.values=  @[@1, @3, @1];
+    scaleAnimation.duration=self.durationOfAnimation;
+    
+    scaleAnimation.timingFunction=[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    scaleAnimation.repeatCount = HUGE_VALF;
+    
+    [self.testView.layer addAnimation:scaleAnimation forKey:@"scaling"];
+}
+- (void) translationMethod {
+    CAKeyframeAnimation *anim;
+    anim = [CAKeyframeAnimation animationWithKeyPath:@"transform.translation.x"];
+    anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    anim.duration = self.durationOfAnimation;
+    
+    anim.repeatCount = INFINITY;
+    CGFloat initialX=CGRectGetMinX(self.testView.frame);
+    NSLog(@"initial x: %f",initialX);
+    anim.values=@[@0,@100,@0,@(-100),@0];
+   
+    [self.testView.layer addAnimation:anim forKey:@"translateByX"];
+}
+
 - (IBAction)actionSwitchRotation:(UISwitch *)sender {
     
     if (sender.isOn) {
         [self rotationMethod:self.currentAngle];
     } else {
         float currentAngle = [(NSNumber *)[self.testView.layer.presentationLayer valueForKeyPath:@"transform.rotation.z"] floatValue];
-        //NSLog(@"current angle: %f",currentAngle);
+        //NSLog(@"current angle: %f",currentAngle*180/3.14);
         self.currentAngle=currentAngle;
-        [self.testView.layer removeAnimationForKey:@"rotate"];
-        self.testView.transform=CGAffineTransformMakeRotation(self.currentAngle);
-    }
-   
-}
-    
+        [self.testView.layer removeAnimationForKey:@"rotateByZ"];
 
+        self.testView.transform=CGAffineTransformRotate(self.testView.transform, self.currentAngle);
+        [UIView animateWithDuration:.3f delay:0 options:0 animations:^{
+            self.testView.transform=CGAffineTransformRotate(self.testView.transform, -self.currentAngle);
+            self.currentAngle=currentAngle;
+        } completion:nil];
+    }
+}
 
 - (IBAction)actionSwitchScale:(UISwitch *)sender {
     
-    
     if (sender.isOn) {
-        [UIView animateWithDuration:2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionRepeat|UIViewAnimationOptionAutoreverse animations:^{
-            CGAffineTransform transformation=CGAffineTransformMakeScale(1.5, 1.5);
-            self.testView.transform=CGAffineTransformConcat(self.testView.transform, transformation);
-            //self.testView.transform=transformation;
+        [self scalingMethod];
+    } else {
+        CGFloat currentScale = [(NSNumber *)[self.testView.layer.presentationLayer valueForKeyPath:@"transform.scale"] floatValue];
+        [self.testView.layer removeAnimationForKey:@"scaling"];
+        self.testView.transform=CGAffineTransformScale(self.testView.transform, currentScale, currentScale);
+        [UIView animateWithDuration:.3f delay:0 options:0 animations:^{
+            float currentScale = [(NSNumber *)[self.testView.layer.presentationLayer valueForKeyPath:@"transform.scale.z"] floatValue];
+            self.testView.transform=CGAffineTransformScale(self.testView.transform, 1/currentScale, 1/currentScale);
             
         } completion:nil];
-        
-    } else if (!self.switchRotation.isOn && !self.switchTranslation.isOn){
-        [self.testView.layer removeAllAnimations];
     }
-     
 }
 
 - (IBAction)actionSwitchTranslation:(UISwitch *)sender {
     if (sender.isOn) {
-        [UIView animateWithDuration:2 delay:0 options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionRepeat|UIViewAnimationOptionAutoreverse animations:^{
-            CGAffineTransform transformation=CGAffineTransformMakeTranslation(100, 0);
-            //self.testView.transform=transformation;
-            self.testView.transform=CGAffineTransformConcat(self.testView.transform, transformation);
-        } completion:nil];
+        [self translationMethod];
         
-    } else if (!self.switchRotation.isOn && !self.switchScale.isOn){
-        [self.testView.layer removeAllAnimations];
+    } else {
+        CGFloat currentPosition = [(NSNumber *)[self.testView.layer.presentationLayer   valueForKeyPath:@"transform.translation.x"] floatValue];
+        [self.testView.layer removeAnimationForKey:@"translateByX"];
+        self.testView.transform=CGAffineTransformTranslate(self.testView.transform, currentPosition, 0);
+        [UIView animateWithDuration:.3f delay:0 options:0 animations:^{
+            
+            self.testView.transform=CGAffineTransformTranslate(self.testView.transform, -currentPosition, 0);
+        } completion:nil];
     }
 }
 
 - (IBAction)actionSliderSpeed:(UISlider *)sender {
-    
+    self.testView.layer.speed=roundf(sender.value*10)/10;
+    //roundf(val * 100) / 100
+    NSLog(@"speed %f rounded to: %f",sender.value,roundf(sender.value*10)/10);
 }
 @end
