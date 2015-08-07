@@ -7,10 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
+typedef NS_ENUM(NSInteger, BallType){
+    BallTypeTennis,
+    BallTypeFootball,
+    BallTypeBasketball
+    
+};
 @interface ViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UISlider *sliderValue;
+
+@property (weak, nonatomic) IBOutlet UILabel *labelSpeed;
+
 @property (weak, nonatomic) IBOutlet UIImageView *testView;
 @property (assign,nonatomic) CGFloat currentAngle;
 @property (assign,nonatomic) CGFloat durationOfAnimation;
@@ -19,6 +26,7 @@
 - (IBAction)actionSwitchScale:(UISwitch *)sender;
 - (IBAction)actionSwitchTranslation:(UISwitch *)sender;
 - (IBAction)actionSliderSpeed:(UISlider *)sender;
+- (IBAction)actionChangeImage:(UISegmentedControl *)sender;
 
 
 @end
